@@ -47,7 +47,7 @@ program
   });
 
 program
-  .command("set-live")
+  .command("set live")
   .description("Set all products as live on Trigger Traders")
   .action(async () => {
     try {
@@ -60,7 +60,7 @@ program
   });
 
 program
-  .command("set-advert-sold <productId>")
+  .command("set advert sold <productId>")
   .description("Mark advert as sold.")
   .action(async (productId) => {
     try {
@@ -73,7 +73,7 @@ program
   });
 
 program
-  .command("delete-advert <productId>")
+  .command("delete advert <productId>")
   .description("Delete advert.")
   .action(async (productId) => {
     try {

@@ -4,6 +4,8 @@ import prisma from "./db/db";
 import log from "./services/logger";
 import {
   addProductToMap,
+  deleteAdvert,
+  setAdvertSold,
   setProductsLive,
 } from "./services/triggertraders-client";
 import { mapDbProductToTriggerTradersProduct } from "./utils/utils";
@@ -11,25 +13,10 @@ import { mapDbProductToTriggerTradersProduct } from "./utils/utils";
 const program = new Command();
 
 program
-  .name("triggertraders-sync")
-  .description("CLI to manage Guns-Sync operations")
+  .name("trigger-traders-sync")
+  .description("CLI to manage Trigger Traders Adverts")
   .version("1.0.0");
 
-// Example command to update the gun database
-program
-  .command("sync-guns")
-  .description("Sync guns from Guntrader API to the database")
-  .action(async () => {
-    try {
-      console.log("Starting gun sync...");
-      await updateGuns();
-      console.log("Gun sync completed!");
-    } catch (error) {
-      console.error("Error syncing guns:", error);
-    }
-  });
-
-// Command to send a product to the Trigger Traders API Mapping Table
 program
   .command("send-trigger-product <productId>")
   .description("Send a product to the Trigger Traders API Mapping Table")
@@ -59,7 +46,6 @@ program
     }
   });
 
-// Command to set products as live on Trigger Traders
 program
   .command("set-live")
   .description("Set all products as live on Trigger Traders")
@@ -68,6 +54,32 @@ program
       console.log("Setting all products live on Trigger Traders...");
       await setProductsLive();
       console.log("Products set live on Trigger Traders!");
+    } catch (error) {
+      log.error(error);
+    }
+  });
+
+program
+  .command("set-advert-sold <productId>")
+  .description("Mark advert as sold.")
+  .action(async (productId) => {
+    try {
+      console.log("Marking advert as sold...");
+      await setAdvertSold(productId);
+      console.log("Advert marked as sold!");
+    } catch (error) {
+      log.error(error);
+    }
+  });
+
+program
+  .command("delete-advert <productId>")
+  .description("Delete advert.")
+  .action(async (productId) => {
+    try {
+      console.log("Deleting advert...");
+      await deleteAdvert(productId);
+      console.log("Advert deleted!");
     } catch (error) {
       log.error(error);
     }

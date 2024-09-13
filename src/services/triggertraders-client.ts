@@ -4,6 +4,7 @@ import log from "./logger";
 const baseUrl = "https://www.triggertraders.com/api/mapping";
 const username = Bun.env["TRIGGER_TRADERS_USER"] || "";
 const password = Bun.env["TRIGGER_TRADERS_PASS"] || "";
+const prefix = Bun.env["TRIGGER_TRADERS_PREFIX"] || "";
 const credentials = btoa(`${username}:${password}`);
 
 const getHeaders = () => {
@@ -59,16 +60,21 @@ const setProductsLive = async () => {
 
 const setAdvertStatus = async (productId: string, advertStatusCode: string) => {
   try {
-    const response = await fetch(`${baseUrl}/advert/update/${productId}`, {
-      headers: getHeaders(),
-      method: "POST",
-      body: JSON.stringify({
-        client_email: `${
-          Bun.env["TRIGGER_TRADERS_USER"] ? Bun.env["TRIGGER_TRADERS_USER"] : ""
-        }`,
-        advert_status: advertStatusCode,
-      }),
-    });
+    const response = await fetch(
+      `${baseUrl}/advert/update/${prefix}_${productId}`,
+      {
+        headers: getHeaders(),
+        method: "POST",
+        body: JSON.stringify({
+          client_email: `${
+            Bun.env["TRIGGER_TRADERS_USER"]
+              ? Bun.env["TRIGGER_TRADERS_USER"]
+              : ""
+          }`,
+          advert_status: advertStatusCode,
+        }),
+      }
+    );
 
     if (!response.ok) {
       throw new Error(`Error setting advert status: ${response.statusText}`);
@@ -80,16 +86,21 @@ const setAdvertStatus = async (productId: string, advertStatusCode: string) => {
 
 const deleteAdvert = async (productId: string) => {
   try {
-    const response = await fetch(`${baseUrl}/advert/update/${productId}`, {
-      headers: getHeaders(),
-      method: "POST",
-      body: JSON.stringify({
-        client_email: `${
-          Bun.env["TRIGGER_TRADERS_USER"] ? Bun.env["TRIGGER_TRADERS_USER"] : ""
-        }`,
-        advert_status: "5",
-      }),
-    });
+    const response = await fetch(
+      `${baseUrl}/advert/update/${prefix}_${productId}`,
+      {
+        headers: getHeaders(),
+        method: "POST",
+        body: JSON.stringify({
+          client_email: `${
+            Bun.env["TRIGGER_TRADERS_USER"]
+              ? Bun.env["TRIGGER_TRADERS_USER"]
+              : ""
+          }`,
+          advert_status: "5",
+        }),
+      }
+    );
 
     if (!response.ok) {
       throw new Error(`Error setting advert status: ${response.statusText}`);
@@ -101,16 +112,21 @@ const deleteAdvert = async (productId: string) => {
 
 const setAdvertSold = async (productId: string) => {
   try {
-    const response = await fetch(`${baseUrl}/advert/update/${productId}`, {
-      headers: getHeaders(),
-      method: "POST",
-      body: JSON.stringify({
-        client_email: `${
-          Bun.env["TRIGGER_TRADERS_USER"] ? Bun.env["TRIGGER_TRADERS_USER"] : ""
-        }`,
-        advert_status: "5",
-      }),
-    });
+    const response = await fetch(
+      `${baseUrl}/advert/update/${prefix}_${productId}`,
+      {
+        headers: getHeaders(),
+        method: "POST",
+        body: JSON.stringify({
+          client_email: `${
+            Bun.env["TRIGGER_TRADERS_USER"]
+              ? Bun.env["TRIGGER_TRADERS_USER"]
+              : ""
+          }`,
+          advert_status: "5",
+        }),
+      }
+    );
 
     if (!response.ok) {
       throw new Error(`Error setting advert status: ${response.statusText}`);

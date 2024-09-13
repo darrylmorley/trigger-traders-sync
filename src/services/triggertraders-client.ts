@@ -64,7 +64,7 @@ const setAdvertStatus = async (productId: string, advertStatusCode: string) => {
       `${baseUrl}/advert/update/${prefix}_${productId}`,
       {
         headers: getHeaders(),
-        method: "POST",
+        method: "PUT",
         body: JSON.stringify({
           client_email: `${
             Bun.env["TRIGGER_TRADERS_USER"]
@@ -90,7 +90,7 @@ const deleteAdvert = async (productId: string) => {
       `${baseUrl}/advert/update/${prefix}_${productId}`,
       {
         headers: getHeaders(),
-        method: "POST",
+        method: "PUT",
         body: JSON.stringify({
           client_email: `${
             Bun.env["TRIGGER_TRADERS_USER"]
@@ -101,6 +101,9 @@ const deleteAdvert = async (productId: string) => {
         }),
       }
     );
+
+    const data = await response.json();
+    log.info(data);
 
     if (!response.ok) {
       throw new Error(`Error setting advert status: ${response.statusText}`);
@@ -116,7 +119,7 @@ const setAdvertSold = async (productId: string) => {
       `${baseUrl}/advert/update/${prefix}_${productId}`,
       {
         headers: getHeaders(),
-        method: "POST",
+        method: "PUT",
         body: JSON.stringify({
           client_email: `${
             Bun.env["TRIGGER_TRADERS_USER"]

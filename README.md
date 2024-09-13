@@ -1,3 +1,3 @@
 # Guns-Sync
 
-A Bun project for syncing Gun Trader guns to other platforms
+A Bun project for syncing gun-trader-sync guns to Trigger Traders

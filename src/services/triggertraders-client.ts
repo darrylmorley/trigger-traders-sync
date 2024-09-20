@@ -93,8 +93,8 @@ const deleteAdvert = async (productId: string) => {
         method: "PUT",
         body: JSON.stringify({
           client_email: `${
-            Bun.env["TRIGGER_TRADERS_USER"]
-              ? Bun.env["TRIGGER_TRADERS_USER"]
+            Bun.env["TRIGGER_TRADERS_EMAIL"]
+              ? Bun.env["TRIGGER_TRADERS_EMAIL"]
               : ""
           }`,
           advert_status: "5",
@@ -106,8 +106,10 @@ const deleteAdvert = async (productId: string) => {
     log.info(data);
 
     if (!response.ok) {
-      throw new Error(`Error setting advert status: ${response.statusText}`);
+      throw new Error(`Error deleting advert`);
     }
+
+    return data;
   } catch (error) {
     log.error(error);
   }
@@ -122,11 +124,11 @@ const setAdvertSold = async (productId: string) => {
         method: "PUT",
         body: JSON.stringify({
           client_email: `${
-            Bun.env["TRIGGER_TRADERS_USER"]
-              ? Bun.env["TRIGGER_TRADERS_USER"]
+            Bun.env["TRIGGER_TRADERS_EMAIL"]
+              ? Bun.env["TRIGGER_TRADERS_EMAIL"]
               : ""
           }`,
-          advert_status: "5",
+          advert_status: "4",
         }),
       }
     );

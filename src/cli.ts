@@ -47,7 +47,7 @@ program
   });
 
 program
-  .command("set live")
+  .command("set-live")
   .description("Set all products as live on Trigger Traders")
   .action(async () => {
     try {
@@ -60,7 +60,7 @@ program
   });
 
 program
-  .command("set advert sold <productId>")
+  .command("set-advert sold <productId>")
   .description("Mark advert as sold.")
   .action(async (productId) => {
     try {
@@ -73,13 +73,20 @@ program
   });
 
 program
-  .command("delete advert <productId>")
+  .command("delete-advert <productId>")
   .description("Delete advert.")
   .action(async (productId) => {
     try {
       console.log("Deleting advert...");
-      await deleteAdvert(productId);
-      console.log("Advert deleted!");
+      const res = await deleteAdvert(productId);
+      // console.log(res);
+      if (res.error) {
+        throw new Error("Error deleting advert");
+      }
+
+      if (res.Message["Product Message"] === "Update Successful") {
+        console.log("Advert deleted!");
+      }
     } catch (error) {
       log.error(error);
     }

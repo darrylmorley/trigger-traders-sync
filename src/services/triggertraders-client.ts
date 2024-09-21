@@ -58,32 +58,6 @@ const setProductsLive = async () => {
   }
 };
 
-const setAdvertStatus = async (productId: string, advertStatusCode: string) => {
-  try {
-    const response = await fetch(
-      `${baseUrl}/advert/update/${prefix}_${productId}`,
-      {
-        headers: getHeaders(),
-        method: "PUT",
-        body: JSON.stringify({
-          client_email: `${
-            Bun.env["TRIGGER_TRADERS_USER"]
-              ? Bun.env["TRIGGER_TRADERS_USER"]
-              : ""
-          }`,
-          advert_status: advertStatusCode,
-        }),
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error(`Error setting advert status: ${response.statusText}`);
-    }
-  } catch (error) {
-    log.error(error);
-  }
-};
-
 const deleteAdvert = async (productId: string) => {
   try {
     const response = await fetch(
@@ -141,10 +115,28 @@ const setAdvertSold = async (productId: string) => {
   }
 };
 
+const getAdverts = async () => {
+  try {
+    const response = await fetch(
+      `${baseUrl}/advert/email/${Bun.env["TRIGGER_TRADERS_EMAIL"]}`,
+      {
+        headers: getHeaders(),
+        method: "GET",
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Error fetching adverts: ${response}`);
+    }
+  } catch (error) {
+    log.error(error);
+  }
+};
+
 export {
   addProductToMap,
   setProductsLive,
-  setAdvertStatus,
   deleteAdvert,
   setAdvertSold,
+  getAdverts,
 };

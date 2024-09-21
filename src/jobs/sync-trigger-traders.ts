@@ -1,23 +1,36 @@
-import { schedule } from "node-cron";
-import log from "../services/logger";
+import { getAdverts } from "../services/triggertraders-client";
 import prisma from "../db/db";
-import { mapDbProductToTriggerTradersProduct } from "../utils/utils";
+import log from "../services/logger";
 
-const syncTriggerTraders = schedule("*/1 * * * *", async () => {
-  log.info("Updating Trigger Traders");
+const sync = async () => {
+  const adverts = await getAdverts();
 
-  const dbProducts = await prisma.gun.findMany({
-    include: { images: true },
-    take: 50,
+  const existingGunIds = await prisma.gun.findMany({
+    select: {
+      guntrader_id: true,
+    },
   });
 
-  const mappedProducts = dbProducts.map((product) =>
-    mapDbProductToTriggerTradersProduct(product)
+  const advertGunIdsSet = new Set(
+    adverts.map((gun) => gun.external_system_id.replace("ssltd_", ""))
   );
 
-  console.log(mappedProducts);
+  const existingGunIdsSet = new Set(
+    existingGunIds.map((gun: any) => gun.guntrader_id)
+  );
 
-  log.info("Trigger Traders updated");
-});
+  const newAdverts = [...existingGunIdsSet].filter(
+    (id) => !advertGunIdsSet.has(id)
+  );
 
-syncTriggerTraders.start();
+  const deadAdverts = [...advertGunIdsSet].filter(
+    (id) => !existingGunIdsSet.has(id)
+  );
+
+  log.info({ deadAdverts }, "Dead adverts:");
+  log.info({ newAdverts }, "New adverts:");
+
+  process.exit(0);
+};
+
+export { sync };

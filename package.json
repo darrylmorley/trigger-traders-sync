@@ -10,6 +10,7 @@
     "prisma",
     "node-cron"
   ],
+  "type": "module",
   "author": "Darryl Morley <darrylmorley.uk@gmail.com>",
   "license": "MIT",
   "scripts": {

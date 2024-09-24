@@ -1,4 +1,8 @@
-import type { DbProduct, TriggerTradersProduct } from "../types/types";
+import type {
+  DbProduct,
+  ITriggerTradersAdvert,
+  TriggerTradersProduct,
+} from "../types/types";
 import { mapDbProductToTriggerTradersProduct } from "../utils/utils";
 import log from "./logger";
 
@@ -8,6 +12,10 @@ const password = Bun.env["TRIGGER_TRADERS_PASS"] || "";
 const prefix = Bun.env["TRIGGER_TRADERS_PREFIX"] || "";
 const email = Bun.env["TRIGGER_TRADERS_EMAIL"] || "";
 const credentials = btoa(`${username}:${password}`);
+
+interface AdvertsResponse {
+  Products: ITriggerTradersAdvert[]; // Replace `any` with the actual type of the products if known
+}
 
 const getHeaders = () => {
   return {
@@ -99,22 +107,20 @@ const setProductsLive = async () => {
 };
 
 const deleteAdvert = async (productId: string) => {
+  const url = `${baseUrl}/mapping/advert/update/${prefix}_${productId}`;
+  const body = JSON.stringify({
+    client_email: `${
+      Bun.env["TRIGGER_TRADERS_EMAIL"] ? Bun.env["TRIGGER_TRADERS_EMAIL"] : ""
+    }`,
+    advert_status: "5",
+  });
+
   try {
-    const response = await fetch(
-      `${baseUrl}/advert/update/${prefix}_${productId}`,
-      {
-        headers: getHeaders(),
-        method: "PUT",
-        body: JSON.stringify({
-          client_email: `${
-            Bun.env["TRIGGER_TRADERS_EMAIL"]
-              ? Bun.env["TRIGGER_TRADERS_EMAIL"]
-              : ""
-          }`,
-          advert_status: "5",
-        }),
-      }
-    );
+    const response = await fetch(url, {
+      headers: getHeaders(),
+      method: "PUT",
+      body: body,
+    });
 
     const data = await response.json();
     log.info(data);
@@ -169,8 +175,8 @@ const getAdverts = async () => {
       throw new Error(`Error fetching adverts: ${errorData}`);
     }
 
-    const { Products } = await response.json();
-    return Products;
+    const data = (await response.json()) as AdvertsResponse;
+    return data.Products;
   } catch (error) {
     log.error(error);
   }
@@ -180,6 +186,7 @@ export {
   addProductToMap,
   setProductsLive,
   deleteAdvert,
+  deleteAdvertsInBatches,
   setAdvertSold,
   getAdverts,
   addBatchToMap,

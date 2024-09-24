@@ -1,7 +1,7 @@
 import type {
-  DbProduct,
+  IDbGun,
   ITriggerTradersAdvert,
-  TriggerTradersProduct,
+  ITriggerTradersProduct,
 } from "../types/types";
 import { mapDbProductToTriggerTradersProduct } from "../utils/utils";
 import log from "./logger";
@@ -24,7 +24,7 @@ const getHeaders = () => {
   };
 };
 
-const addProductToMap = async (product: TriggerTradersProduct) => {
+const addProductToMap = async (product: ITriggerTradersProduct) => {
   try {
     const response = await fetch(`${baseUrl}/mapping/add`, {
       headers: getHeaders(),
@@ -43,7 +43,7 @@ const addProductToMap = async (product: TriggerTradersProduct) => {
   }
 };
 
-const addBatchToMap = async (products: DbProduct[]) => {
+const addBatchToMap = async (products: IDbGun[]) => {
   const BATCH_SIZE = 10; // Adjust the batch size according to your needs
 
   for (let i = 0; i < products.length; i += BATCH_SIZE) {
@@ -186,7 +186,6 @@ export {
   addProductToMap,
   setProductsLive,
   deleteAdvert,
-  deleteAdvertsInBatches,
   setAdvertSold,
   getAdverts,
   addBatchToMap,

@@ -52,7 +52,6 @@ async function mapDbProductToTriggerTradersProduct(
     img: imageUrls, // Pass image URLs directly
   };
 
-  log.info({ mappedProduct }, "Mapped Product");
   return mappedProduct;
 }
 

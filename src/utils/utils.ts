@@ -26,48 +26,9 @@ async function mapDbProductToTriggerTradersProduct(
     throw new Error("Product images are undefined");
   }
 
-  const BATCH_SIZE = 10; // Limit to 10 concurrent requests
-
   const imageUrls = product.images.map((image) => image.original_url);
   if (imageUrls.includes(undefined)) {
     throw new Error("One or more image URLs are undefined");
-  }
-
-  const base64Images: string[] = [];
-
-  // Function to create batches of promises
-  function chunkArray<T>(arr: T[], size: number): T[][] {
-    const result = [];
-    for (let i = 0; i < arr.length; i += size) {
-      result.push(arr.slice(i, i + size));
-    }
-    return result;
-  }
-
-  // Create batches of image fetch promises
-  const imageBatches = chunkArray(imageUrls, BATCH_SIZE);
-
-  for (const batch of imageBatches) {
-    // Wait for each batch of promises to resolve
-    const base64Batch = await Promise.all(
-      batch.map(async (imageUrl) => {
-        try {
-          if (!imageUrl) throw new Error("Image URL is undefined");
-          const base64Image = await imageUrlToBase64(imageUrl);
-          return base64Image || null; // Return null if there's an error
-        } catch (error) {
-          log.error(`Error processing image URL ${imageUrl}: ${error}`);
-          return null; // Return null to avoid breaking the batch
-        }
-      })
-    );
-
-    // Filter out null or undefined base64 images
-    base64Images.push(
-      ...base64Batch.filter(
-        (img): img is string => img !== null && img !== undefined
-      )
-    );
   }
 
   const mappedProduct = {
@@ -82,13 +43,13 @@ async function mapDbProductToTriggerTradersProduct(
     model: product.model,
     calibre: product.calibre,
     condition: product.is_new ? "New" : "Used",
-    orientation: product.orientation ? product.orientation : "",
-    stock_length: product.stock_dimensions ? product.stock_dimensions : "",
-    barrel_length: product.barrel_dimensions ? product.barrel_dimensions : "",
-    trigger_type: product.trigger ? product.trigger : "",
-    choke_type: product.choke ? product.choke : "",
+    orientation: product.orientation || "",
+    stock_length: product.stock_dimensions || "",
+    barrel_length: product.barrel_dimensions || "",
+    trigger_type: product.trigger || "",
+    choke_type: product.choke || "",
     price: product.price ? `${product.price / 100}` : "0",
-    img: [...base64Images], // Ensure images are properly resolved
+    img: imageUrls, // Pass image URLs directly
   };
 
   log.info({ mappedProduct }, "Mapped Product");

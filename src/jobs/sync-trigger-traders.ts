@@ -2,6 +2,7 @@ import {
   deleteAdvert,
   getAdverts,
   addBatchToMap,
+  setProductsLive,
 } from "../services/triggertraders-client";
 import log from "../services/logger";
 import prisma from "../db/db";
@@ -95,9 +96,13 @@ const sync = async () => {
 
   await addBatchToMap(dbGuns);
 
-  log.info(`Sync complete:`);
   log.info(`New Adverts: ${newAdverts.length}`);
   log.info(`Adverts deleted: ${deadAdverts.length}`);
+
+  log.info(`Setting products live...`);
+  await setProductsLive();
+
+  log.info(`Sync complete.`);
 
   process.exit(0);
 };

@@ -14,7 +14,7 @@ const email = Bun.env["TRIGGER_TRADERS_EMAIL"] || "";
 const credentials = btoa(`${username}:${password}`);
 
 interface AdvertsResponse {
-  Products: ITriggerTradersAdvert[]; // Replace `any` with the actual type of the products if known
+  Products: ITriggerTradersAdvert[];
 }
 
 const getHeaders = () => {

@@ -86,12 +86,9 @@ const sync = async () => {
 
   const { newAdverts, deadAdverts } = filterIds(dbGunIds, advertGunIds);
 
-  console.log("New Adverts: ", newAdverts);
-  console.log("Dead Adverts: ", deadAdverts);
-
   for (const productId of deadAdverts) {
-    const deleted = await deleteAdvert(productId);
-    console.log("Deleted: ", deleted);
+    log.info(`Deleting advert: ${productId}`);
+    await deleteAdvert(productId);
   }
 
   const dbGuns: IDbGun[] = await fetchDbGuns(newAdverts);

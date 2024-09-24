@@ -83,7 +83,7 @@ const addBatchToMap = async (products: IDbGun[]) => {
 
 const setProductsLive = async () => {
   try {
-    const response = await fetch(`${baseUrl}/map`, {
+    const response = await fetch(`${baseUrl}/mapping/map`, {
       headers: getHeaders(),
       method: "POST",
       body: JSON.stringify({

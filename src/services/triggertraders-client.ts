@@ -96,7 +96,9 @@ const setProductsLive = async () => {
     });
 
     if (!response.ok) {
-      throw new Error(`Error adding product: ${response.statusText}`);
+      throw new Error(
+        `Error adding product: ${response.status} ${response.statusText}`
+      );
     }
 
     const data = await response.json();
